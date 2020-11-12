@@ -94,6 +94,6 @@ async def exit(ctx):
     await Member.remove_roles(ctx.message.author, ctx.message.author.top_role)
     await Member.kick(ctx.message.author)
 
-
-
+    
 token = os.environ.get("BOT_TOKEN")
+bot.run(str(token))
