@@ -2,7 +2,7 @@ import discord
 from discord import Message, Member
 from discord.ext import commands
 import os
-bot = commands.Bot(command_prefix='/')
+bot = commands.Bot(command_prefix='/', intents=Intents.all())
 ploxie_slova = ["бля", "сука", "гондон", "сучара", "нахер", "нахуй", "лох"]
 
 
@@ -21,6 +21,26 @@ async def on_message(msg):
         await Message.add_reaction(msg, emoji="😂")
         await msg.channel.send("хвхвхвх")
     await bot.process_commands(msg)
+
+
+@bot.event
+async def on_member_ban(guild, member):
+    await guild.text_channels[0].send(f"{member} был(а) изгнан(а)!")
+
+
+@bot.event
+async def on_member_unban(guild, member):
+    await guild.text_channels[0].send(f"{member} искупил(а) свою вину!")
+
+
+@bot.event
+async def on_member_join(member):
+    await member.guild.text_channels[0].send(f"Добро пожаловать {member}")
+
+
+@bot.event
+async def on_member_remove(member):
+    await member.guild.text_channels[0].send(f"{member} покинул нас!")
 
 
 @bot.command()
@@ -48,7 +68,10 @@ async def ban(ctx, member: discord.Member):
     elif m_n == "Дмитрий Чувилин#4366":
         await ctx.send(f"{name} мой создатель я не могу так с ним!")
     elif a_r == "admin" and m_r != "admin":
-        await ctx.send(f"{name} зачем вы так с ним?")
+        await member.send("Вас выгнали за некоректное поведение!")
+        link = await ctx.channel.create_invite(max_age=300)
+        await member.send("Вы можете пройти по этой ссылке когда вас простят")
+        await member.send(link)
         await Member.ban(member)
     else:
         await ctx.send(f"{name} вы не имеете право!")
@@ -91,9 +114,10 @@ async def image(ctx, imag):
 @bot.command()
 async def exit(ctx):
     await Message.delete(ctx.message)
-    await Member.remove_roles(ctx.message.author, ctx.message.author.top_role)
+    if str(ctx.message.author.top_role) != "@everyone":
+        await Member.remove_roles(ctx.message.author, ctx.message.author.top_role)
     await Member.kick(ctx.message.author)
-
+    
     
 token = os.environ.get("BOT_TOKEN")
 bot.run(str(token))
