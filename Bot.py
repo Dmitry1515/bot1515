@@ -1,7 +1,7 @@
 import discord
 from discord import Message, Member, Intents
 from discord.ext import commands
-
+import os
 
 bot = commands.Bot(command_prefix='/', intents=Intents.all())
 ploxie_slova = ["бля", "сука", "гондон", "сучара", "нахер", "нахуй", "лох"]
