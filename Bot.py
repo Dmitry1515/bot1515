@@ -1,7 +1,8 @@
 import discord
-from discord import Message, Member
+from discord import Message, Member, Intents
 from discord.ext import commands
-import os
+
+
 bot = commands.Bot(command_prefix='/', intents=Intents.all())
 ploxie_slova = ["бля", "сука", "гондон", "сучара", "нахер", "нахуй", "лох"]
 
@@ -117,7 +118,7 @@ async def exit(ctx):
     if str(ctx.message.author.top_role) != "@everyone":
         await Member.remove_roles(ctx.message.author, ctx.message.author.top_role)
     await Member.kick(ctx.message.author)
-    
+
     
 token = os.environ.get("BOT_TOKEN")
 bot.run(str(token))
